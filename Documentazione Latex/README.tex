@@ -4,7 +4,7 @@
 \usepackage{MnSymbol}
 
 \title{\textbf{Van Emde Boas tree}}
-\author{Alex Falzone }
+\author{\textbf{Alex Falzone} }
 \date{2020/2021}
 
 \begin{document}
@@ -13,12 +13,11 @@
 \section{Introduzione\dotfill2}
 \section{Struttura albero\dotfill3}
 \section{Operazioni vEB\dotfill4}
-\vspace*{10pt}\subsection{Minimo e Massimo\dotfill4}
+\subsection{Minimo e Massimo\dotfill4}
 \subsection{Successore e Predecessore\dotfill4}
 \subsection{Inserimento\dotfill6}
 \subsection{Cancellazione\dotfill7}
-\section{UML}
-\section{Conclusioni}
+\section{UML\dotfill10}
 \newpage
 
 \begin{flushleft}
@@ -28,7 +27,7 @@
 \normalsize
     
     Creato nel 1975 dall'informatico Peter van Emde Boas e successivamente affinato da van Emde Boas, Kaas e Zijlstra.\\
-    Questo albero supporta le operazioni di inserimento, cancellazione, successore, predecessore, massimo, minimo e ricerca nel tempo O(lg(lg(u))).
+    Questo albero supporta le operazioni di inserimento, cancellazione, successore, predecessore, massimo, minimo e ricerca tutte nel tempo O(lg(lg(u))).
     Un albero di van Emde Boas (abbreviato anche come vEB) deve avere delle caratteristiche ben precise:
     \begin{itemize}
         \item Un attributo \textbf{u} che rappresenta la dimensione dell'albero
@@ -170,7 +169,7 @@
 \end{flushleft}        
 
 \begin{flushleft}            
-        \subsubsection{INSERIMENTO}
+        \subsubsection{Inserimento}
             ~\\Empty-Insert(V, key)
             \begin{enumerate}
                 \item V.min = key
@@ -232,9 +231,31 @@
                 \item \hspace{40pt} V.max = index(high(key), MASSIMO(V.cluster[high(key)]))
             \end{enumerate}
             ~\\Se l'albero vEB V contiene un solo elemento, allora impostiamo min e max a NIL. Le righe 1-3 gestiscono questo caso.\\
+            Altrimenti l'albero ha almeno 2 elementi. La riga 4 controlla se è un albero nel caso base, se lo è, le righe 5-8 impostano min e max all'elemento rimasto.
+            Successivamente sappiamo che l'albero avrà due o più elementi e che la dimensione 'universe' sarà maggiore o uguale a 4; Di conseguenza dovremmo cancellare un elemento da un cluster.
+            Tuttavia, l'elemento che cancelliamo da un cluster potrebbe non essere key, perché se key è uguale a min, allora una volta cancellato key stesso, qualche altro elemento all'interno di uno dei cluster dell'albero vEB diventa il nuovo min, e dovremo cancellare tale elemento dal suo cluster. Se il test nella riga 9 rivela che ci troviamo in questo caso, allora la riga 10 imposta first-cluster al numero del cluster che contiene il più piccolo elemento diverso da min, e la riga 11 imposta key al valore del più piccolo elemento in tale cluster.
+            Questo elemento diventa il nuovo min nella riga 12 e, poiché impostiamo key al valore di tale elemento, esso è l'elemento che sarà cancellato dal suo cluster.\\
+            Quando arriviamo alla riga 13, sappiamo che dobbiamo cancellare l'elemento key dal suo cluster, sia che esso sia il valore originariamente passato a Cancellazione e sia che sia l'elemento che deve diventare il nuovo minimo. La riga 13 cancella key dal suo cluster. Questo cluster adesso potrebbe essere vuoto; la          verifica di ciò avviene nella riga 14. Se il cluster è vuoto, occorre rimuovere il numero del cluster di key dal summary; questo compito è svolto dalla riga 15. Dopo avere aggiornato il summary, occorre aggiornare max. La riga 16 verifica se stiamo cancellando l'elemento massimo in vEB e, in caso affermativo, la riga 17 imposta summary-max al numero del cluster non vuoto con il numero più grande. Se tutti i cluster di vEB sono vuoti, allora l'unico elemento rimasto è min; la riga 18 verifica questo caso, e la riga 19 aggiorna max in modo appropriato. Altrimenti, la riga 20 imposta max al massimo elemento nel cluster con il numero più grande. (Se questo è il cluster in cui
+            abbiamo cancellato l'elemento, ci affidiamo di nuovo alla chiamata ricorsiva nella riga 13 che ha già corretto l'attributo max di tale cluster.)\\
+            Infine, dobbiamo gestire il caso in cui il cluster di key non sia vuoto dopo la cancellazione di key stesso. Sebbene non occorra aggiornare il summary in questo caso, potrebbe essere necessario aggiornare max. La riga 21 verifica questo caso, e se occorre aggiornare max, ciò avviene nella riga 22. \\
+            Anche questo metodo ha tempo di esecuzione nel caso peggiore O(lg lg u)
             
-            
+
 \end{flushleft}
+
+\newpage
+\begin{flushleft}
+\huge \textbf{4. UML}
+\newline
+\newline
+\normalsize
+    \begin{figure}[h!]
+    \begin{center}
+    \includegraphics[width=9cm]{UML.jpeg}\\
+    \end{center}
+\end{figure}
+\end{flushleft}
+ 
 
 \end{document}
     
